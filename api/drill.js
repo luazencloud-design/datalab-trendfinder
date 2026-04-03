@@ -3,9 +3,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const API_KEY = req.body.apiKey || process.env.ANTHROPIC_API_KEY;
+  const API_KEY = req.body.apiKey || process.env.GEMINI_API_KEY;
   if (!API_KEY) {
-    return res.status(400).json({ error: 'API 키가 필요합니다. 입력란에 Anthropic API 키를 입력해주세요.' });
+    return res.status(400).json({ error: 'API 키가 필요합니다. 입력란에 Gemini API 키를 입력해주세요.' });
   }
 
   const { category, period } = req.body;
@@ -19,28 +19,24 @@ JSON만 반환 (마크다운 없이):
 {"brands":[{"rank":1,"name":"브랜드명","score":100,"desc":"한줄설명"},{"rank":2,"name":"브랜드명","score":88,"desc":"한줄설명"},{"rank":3,"name":"브랜드명","score":76,"desc":"한줄설명"},{"rank":4,"name":"브랜드명","score":65,"desc":"한줄설명"},{"rank":5,"name":"브랜드명","score":56,"desc":"한줄설명"},{"rank":6,"name":"브랜드명","score":48,"desc":"한줄설명"},{"rank":7,"name":"브랜드명","score":41,"desc":"한줄설명"},{"rank":8,"name":"브랜드명","score":35,"desc":"한줄설명"},{"rank":9,"name":"브랜드명","score":29,"desc":"한줄설명"},{"rank":10,"name":"브랜드명","score":24,"desc":"한줄설명"}]}`;
 
   try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': API_KEY,
-        'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 700,
-        messages: [{ role: 'user', content: prompt }]
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: {
+          responseMimeType: "application/json"
+        }
       })
     });
 
     const data = await response.json();
     if (data.error) throw new Error(data.error.message);
 
-    const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('JSON 파싱 실패');
-
-    res.json(JSON.parse(jsonMatch[0]));
+    const text = data.candidates[0].content.parts[0].text;
+    res.json(JSON.parse(text));
   } catch (e) {
     console.error('드릴다운 오류:', e.message);
     res.status(500).json({ error: '브랜드 분석 중 오류가 발생했습니다.' });

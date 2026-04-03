@@ -162,7 +162,7 @@ body {
   <div class="search-box" style="flex-direction: column; gap: 12px;">
     <div style="display: flex; align-items: center; gap: 10px; width: 100%; flex-wrap: wrap;">
       <label style="min-width: 70px;">🔑 API 키</label>
-      <input type="password" id="apiKeyInput" placeholder="sk-ant-... Anthropic API 키를 입력하세요" style="flex: 1; min-width: 200px;" />
+      <input type="password" id="apiKeyInput" placeholder="AIzaSy... Gemini API 키를 입력하세요" style="flex: 1; min-width: 200px;" />
       <button class="main-btn" style="background: #555; padding: 9px 14px; font-size: 13px;" onclick="toggleKeyVisibility()" id="toggleKeyBtn">보기</button>
     </div>
     <div style="display: flex; align-items: center; gap: 10px; width: 100%; flex-wrap: wrap;">
@@ -170,7 +170,9 @@ body {
       <input type="text" id="periodInput" placeholder="예: 25년 4월 / 2024년 11월" value="25년 4월" />
       <button class="main-btn" id="analyzeBtn" onclick="analyze()">분석하기</button>
     </div>
-    <span class="hint">⚠️ API 키는 브라우저에만 저장되며 서버에 보관되지 않습니다 · 입력 월의 전년도 동월 쇼핑 트렌드를 분석합니다</span>
+    <span class="hint">⚠️ API 키는 브라우저에만 저장되며 서버에 보관되지 않습니다
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#6366f1;">aistudio.google.com</a>에서 무료 발급
+      · 입력 월의 전년도 동월 쇼핑 트렌드를 분석합니다</span>
   </div>
 
   <div class="status-bar" id="statusBar"></div>
@@ -224,14 +226,15 @@ function getApiKey() {
 }
 function saveApiKey() {
   const key = getApiKey();
-  if (key) { try { localStorage.setItem('anthropic_api_key', key); } catch(e) {} }
+  if (key) { try { localStorage.setItem('gemini_api_key', key); } catch(e) {} }
 }
 function loadApiKey() {
   try {
-    const saved = localStorage.getItem('anthropic_api_key');
+    const saved = localStorage.getItem('gemini_api_key');
     if (saved) document.getElementById('apiKeyInput').value = saved;
   } catch(e) {}
 }
+
 function toggleKeyVisibility() {
   const input = document.getElementById('apiKeyInput');
   const btn = document.getElementById('toggleKeyBtn');
@@ -249,8 +252,9 @@ function parsePeriod(input) {
 
 async function analyze() {
   const apiKey = getApiKey();
-  if (!apiKey || !apiKey.startsWith('sk-ant-')) {
-    alert('Anthropic API 키를 입력해주세요. (sk-ant-로 시작)');
+  // Gemini API 키는 보통 'AIza'로 시작하지만 강제하지 않는 것이 안전합니다.
+  if (!apiKey) {
+    alert('Gemini API 키를 입력해주세요.');
     document.getElementById('apiKeyInput').focus();
     return;
   }
@@ -259,7 +263,7 @@ async function analyze() {
   const raw = document.getElementById('periodInput').value.trim();
   const parsed = parsePeriod(raw);
   if (!parsed) { alert('형식을 확인해주세요. 예: 25년 4월 / 2024년 11월'); return; }
-
+  
   const prevYear = parsed.year - 1;
   currentPeriod = `${prevYear}년 ${parsed.month}월`;
   const btn = document.getElementById('analyzeBtn');
