@@ -283,8 +283,12 @@ async function analyze() {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ period: currentPeriod, month: parsed.month, apiKey })
     });
-    if (!res.ok) { const e = await res.json(); throw new Error(e.error || '서버 오류'); }
-    const result = await res.json();
+    const text = await res.text();
+    let result;
+    try { result = JSON.parse(text); } catch(parseErr) {
+      throw new Error('서버가 JSON이 아닌 응답을 반환했습니다. API 경로를 확인해주세요.');
+    }
+    if (!res.ok) { throw new Error(result.error || '서버 오류'); }
 
     sb.textContent = `✅ ${result.period} 분석 완료 — ${result.summary || ''}`;
     document.getElementById('catPeriod').textContent = result.period;
@@ -361,7 +365,9 @@ async function drillDown(categoryName) {
       body: JSON.stringify({ category: categoryName, period: currentPeriod, apiKey })
     });
     if (!res.ok) throw new Error();
-    const result = await res.json();
+    const resText = await res.text();
+    let result;
+    try { result = JSON.parse(resText); } catch(e) { throw new Error('JSON 파싱 실패'); }
     const max = result.brands[0]?.score || 100;
     content.innerHTML = `<div class="drill-grid">${result.brands.map(b => {
       const pct = Math.round(b.score / max * 100);

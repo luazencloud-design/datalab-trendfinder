@@ -2,5 +2,6 @@
   "name": "datalab-trend",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "description": "네이버 데이터랩 쇼핑 트렌드 분석 웹서비스"
 }
