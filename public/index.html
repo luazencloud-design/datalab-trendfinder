@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>라스트원 브랜드유통 트렌드 분석</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f5f7fa; min-height: 100vh; padding: 24px 16px; color: #1a1a2e;
+}
+.container { max-width: 980px; margin: 0 auto; }
+.header { text-align: center; margin-bottom: 28px; }
+.header h1 {
+  font-size: 22px; font-weight: 700; color: #03C75A;
+  display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 5px;
+}
+.header p { font-size: 13px; color: #888; }
+.search-box {
+  background: #fff; border-radius: 14px; padding: 20px 24px;
+  margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.search-box label { font-size: 14px; color: #444; font-weight: 600; white-space: nowrap; }
+.search-box input {
+  flex: 1; min-width: 160px; padding: 9px 14px;
+  border: 1.5px solid #e0e0e0; border-radius: 9px; font-size: 15px; outline: none; transition: border-color .2s;
+}
+.search-box input:focus { border-color: #03C75A; }
+.search-box button.main-btn {
+  background: #03C75A; color: #fff; border: none; border-radius: 9px;
+  padding: 9px 22px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .15s;
+}
+.search-box button.main-btn:hover { background: #02a84b; }
+.search-box button.main-btn:disabled { background: #bbb; cursor: not-allowed; }
+.hint { font-size: 12px; color: #aaa; width: 100%; }
+.status-bar {
+  text-align: center; padding: 14px; font-size: 14px; color: #555;
+  background: #fff; border-radius: 10px; margin-bottom: 18px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05); display: none;
+}
+.status-bar.show { display: block; }
+
+.charts-grid { display: grid; grid-template-columns: 300px 1fr; gap: 18px; align-items: start; }
+@media (max-width: 700px) { .charts-grid { grid-template-columns: 1fr; } }
+
+.chart-card {
+  background: #fff; border-radius: 14px; padding: 18px 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07); display: none;
+}
+.chart-card.show { display: block; }
+.card-title { font-size: 15px; font-weight: 700; color: #111; display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.period-badge {
+  display: inline-block; background: #e8f9ef; color: #028a42;
+  font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 20px; margin-bottom: 14px;
+}
+
+.rank-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 0; border-bottom: 1px solid #f5f5f5;
+}
+.rank-item.clickable { cursor: pointer; border-radius: 8px; padding: 7px 6px; transition: background .15s; }
+.rank-item.clickable:hover { background: #f0fdf5; }
+.rank-item.clickable:hover .rank-name { color: #03C75A; }
+.rank-num {
+  width: 21px; height: 21px; border-radius: 50%; font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #f0f0f0; color: #666;
+}
+.rank-num.g1 { background: #FFD700; color: #7a5c00; }
+.rank-num.g2 { background: #C0C0C0; color: #333; }
+.rank-num.g3 { background: #CD7F32; color: #fff; }
+.rank-info { flex: 1; min-width: 0; }
+.rank-name { font-size: 13px; color: #222; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; transition: color .15s; }
+.drill-hint { font-size: 10px; color: #bbb; margin-top: 1px; }
+.bar-wrap { width: 65px; background: #f0f0f0; border-radius: 4px; height: 7px; overflow: hidden; flex-shrink: 0; }
+.bar-fill { height: 100%; border-radius: 4px; background: #03C75A; }
+.rank-pct { font-size: 11px; color: #aaa; min-width: 24px; text-align: right; flex-shrink: 0; }
+.up { color: #03C75A; font-size: 11px; }
+.down { color: #e74c3c; font-size: 11px; }
+.flat { color: #aaa; font-size: 11px; }
+
+/* 필터 탭 */
+.filter-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.filter-tab {
+  padding: 4px 11px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  cursor: pointer; border: 1.5px solid #e8e8e8; background: #f8f8f8; color: #888; transition: all .15s;
+}
+.filter-tab:hover { border-color: #ccc; color: #555; }
+.filter-tab.active[data-cat="전체"]   { background:#f0fdf5; color:#03C75A; border-color:#03C75A; }
+.filter-tab.active[data-cat="패션의류"]   { background:#EEF2FF; color:#4F46E5; border-color:#4F46E5; }
+.filter-tab.active[data-cat="스포츠레저"] { background:#ECFDF5; color:#059669; border-color:#059669; }
+.filter-tab.active[data-cat="출산육아"]   { background:#FFF7ED; color:#EA580C; border-color:#EA580C; }
+.filter-tab.active[data-cat="패션잡화"]   { background:#FDF4FF; color:#9333EA; border-color:#9333EA; }
+
+/* 브랜드 2열 그리드 */
+.brand-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+@media (max-width: 500px) { .brand-grid { grid-template-columns: 1fr; } }
+
+.brand-item {
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 3px; border-bottom: 1px solid #f5f5f5; transition: opacity .15s;
+}
+.brand-item.hidden { display: none; }
+.brand-rank {
+  width: 20px; height: 20px; border-radius: 50%; font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  background: #f0f0f0; color: #666;
+}
+.brand-rank.g1 { background: #FFD700; color: #7a5c00; }
+.brand-rank.g2 { background: #C0C0C0; color: #333; }
+.brand-rank.g3 { background: #CD7F32; color: #fff; }
+.brand-cat-badge {
+  font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 8px;
+  white-space: nowrap; flex-shrink: 0; letter-spacing: -0.3px;
+}
+.brand-name { font-size: 12px; color: #222; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brand-bar-wrap { width: 44px; background: #f0f0f0; border-radius: 3px; height: 5px; overflow: hidden; flex-shrink: 0; }
+.brand-bar-fill { height: 100%; border-radius: 3px; }
+.brand-pct { font-size: 10px; color: #bbb; min-width: 20px; text-align: right; flex-shrink: 0; }
+
+/* 드릴다운 패널 */
+.drill-panel {
+  display: none; background: #fff; border-radius: 14px; padding: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.10); margin-top: 18px;
+  border-top: 3px solid #03C75A; grid-column: 1 / -1;
+}
+.drill-panel.show { display: block; }
+.drill-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.drill-title { font-size: 15px; font-weight: 700; color: #111; display: flex; align-items: center; gap: 6px; }
+.drill-close { background: #f3f3f3; border: none; border-radius: 7px; padding: 5px 12px; font-size: 13px; cursor: pointer; color: #555; }
+.drill-close:hover { background: #e0e0e0; }
+.drill-loading { text-align: center; padding: 20px; font-size: 13px; color: #888; }
+.drill-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+.drill-brand-card { background: #f9f9f9; border-radius: 10px; padding: 12px 14px; border: 1px solid #eee; display: flex; align-items: center; gap: 10px; }
+.drill-brand-rank { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; background: #f0f0f0; color: #666; }
+.drill-brand-rank.g1 { background: #FFD700; color: #7a5c00; }
+.drill-brand-rank.g2 { background: #C0C0C0; color: #333; }
+.drill-brand-rank.g3 { background: #CD7F32; color: #fff; }
+.drill-brand-name { font-size: 13px; font-weight: 600; color: #222; }
+.drill-brand-bar-wrap { width: 100%; background: #e8e8e8; border-radius: 3px; height: 5px; margin-top: 5px; overflow: hidden; }
+.drill-brand-bar { height: 100%; border-radius: 3px; background: #03C75A; }
+.drill-brand-score { font-size: 10px; color: #aaa; margin-top: 3px; }
+
+.footer-note { text-align: center; font-size: 11px; color: #ccc; margin-top: 18px; padding-bottom: 4px; }
+.footer-note a { color: #03C75A; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>
+      <svg width="36" height="36" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+        <rect width="36" height="36" rx="8" fill="#1a1a2e"/>
+        <text x="10" y="26" font-size="22" font-weight="800" fill="#ffffff" font-family="Arial, sans-serif">L</text>
+      </svg>
+      라스트원 브랜드유통 트렌드 분석
+    </h1>
+    <p>패션의류 · 스포츠레저 · 출산육아 · 패션잡화 브랜드 TOP 30 순위</p>
+  </div>
+
+  <div class="search-box">
+    <label>분석 월</label>
+    <input type="text" id="periodInput" placeholder="예: 25년 4월 / 2024년 11월" value="25년 4월" />
+    <button class="main-btn" id="analyzeBtn" onclick="analyze()">분석하기</button>
+    <span class="hint">입력 월의 전년도 동월 쇼핑 트렌드를 분석합니다</span>
+  </div>
+
+  <div class="status-bar" id="statusBar"></div>
+
+  <div class="charts-grid" id="chartsGrid">
+    <div class="chart-card" id="catCard">
+      <div class="card-title">🛍️ 인기 쇼핑 카테고리</div>
+      <div class="period-badge" id="catPeriod"></div>
+      <div id="catList"></div>
+    </div>
+
+    <div class="chart-card" id="brandCard">
+      <div class="card-title">🏷️ 인기 브랜드 TOP 30</div>
+      <div class="period-badge" id="brandPeriod"></div>
+      <div class="filter-tabs">
+        <span class="filter-tab active" data-cat="전체" onclick="filterBrands('전체')">전체</span>
+        <span class="filter-tab" data-cat="패션의류" onclick="filterBrands('패션의류')">👗 패션의류</span>
+        <span class="filter-tab" data-cat="스포츠레저" onclick="filterBrands('스포츠레저')">🏃 스포츠레저</span>
+        <span class="filter-tab" data-cat="출산육아" onclick="filterBrands('출산육아')">👶 출산육아</span>
+        <span class="filter-tab" data-cat="패션잡화" onclick="filterBrands('패션잡화')">👜 패션잡화</span>
+      </div>
+      <div class="brand-grid" id="brandList"></div>
+    </div>
+
+    <div class="drill-panel" id="drillPanel">
+      <div class="drill-header">
+        <div class="drill-title" id="drillTitle"></div>
+        <button class="drill-close" onclick="closeDrill()">✕ 닫기</button>
+      </div>
+      <div id="drillContent"></div>
+    </div>
+  </div>
+
+  <div class="footer-note" id="footerNote" style="display:none">
+    AI 분석 기반 · 라스트원 브랜드유통
+  </div>
+</div>
+
+<script>
+let currentPeriod = '';
+const CAT_COLORS = {
+  '패션의류':   { bar:'#4F46E5', bg:'#EEF2FF', text:'#4F46E5' },
+  '스포츠레저': { bar:'#059669', bg:'#ECFDF5', text:'#059669' },
+  '출산육아':   { bar:'#EA580C', bg:'#FFF7ED', text:'#EA580C' },
+  '패션잡화':   { bar:'#9333EA', bg:'#FDF4FF', text:'#9333EA' }
+};
+
+function parsePeriod(input) {
+  const m = input.match(/(\d{2,4})년\s*(\d{1,2})월/);
+  if (!m) return null;
+  let y = parseInt(m[1]); if (y < 100) y += 2000;
+  return { year: y, month: parseInt(m[2]) };
+}
+
+async function analyze() {
+  const raw = document.getElementById('periodInput').value.trim();
+  const parsed = parsePeriod(raw);
+  if (!parsed) { alert('형식을 확인해주세요. 예: 25년 4월 / 2024년 11월'); return; }
+
+  const prevYear = parsed.year - 1;
+  currentPeriod = `${prevYear}년 ${parsed.month}월`;
+  const btn = document.getElementById('analyzeBtn');
+  btn.disabled = true; closeDrill();
+
+  const sb = document.getElementById('statusBar');
+  sb.className = 'status-bar show';
+  sb.textContent = `⏳ ${currentPeriod} 트렌드 분석 중...`;
+  document.getElementById('catCard').classList.remove('show');
+  document.getElementById('brandCard').classList.remove('show');
+  document.getElementById('footerNote').style.display = 'none';
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.filter-tab[data-cat="전체"]').classList.add('active');
+
+  try {
+    const res = await fetch('/api/analyze', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ period: currentPeriod, month: parsed.month })
+    });
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error || '서버 오류'); }
+    const result = await res.json();
+
+    sb.textContent = `✅ ${result.period} 분석 완료 — ${result.summary || ''}`;
+    document.getElementById('catPeriod').textContent = result.period;
+    document.getElementById('brandPeriod').textContent = result.period;
+    renderCategoryList('catList', result.categories);
+    renderBrandList('brandList', result.brands);
+    document.getElementById('catCard').classList.add('show');
+    document.getElementById('brandCard').classList.add('show');
+    document.getElementById('footerNote').style.display = 'block';
+  } catch (e) { sb.textContent = '❌ 오류: ' + e.message; }
+  btn.disabled = false;
+}
+
+function renderCategoryList(id, items) {
+  const el = document.getElementById(id);
+  const max = items[0]?.score || 100;
+  el.innerHTML = items.map(item => {
+    const pct = Math.round(item.score / max * 100);
+    const gClass = item.rank <= 3 ? `g${item.rank}` : '';
+    const trendHtml = item.trend === '상승' ? `<span class="up">▲ 상승</span>`
+      : item.trend === '하락' ? `<span class="down">▼ 하락</span>`
+      : `<span class="flat">— 유지</span>`;
+    return `<div class="rank-item clickable" onclick="drillDown('${item.name.replace(/'/g,"\\'")}')">
+      <div class="rank-num ${gClass}">${item.rank}</div>
+      <div class="rank-info">
+        <div class="rank-name">${item.name}</div>
+        <div>${trendHtml} <span class="drill-hint">· 탭하면 브랜드 보기 👆</span></div>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div>
+      <div class="rank-pct">${pct}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderBrandList(id, items) {
+  const el = document.getElementById(id);
+  const max = items[0]?.score || 100;
+  el.innerHTML = items.map(item => {
+    const pct = Math.round(item.score / max * 100);
+    const gClass = item.rank === 1 ? 'g1' : item.rank === 2 ? 'g2' : item.rank === 3 ? 'g3' : '';
+    const dimStyle = item.rank > 10 ? 'background:#f5f5f5;color:#ccc;font-size:10px;' : '';
+    const cc = CAT_COLORS[item.category] || { bar:'#aaa', bg:'#f0f0f0', text:'#888' };
+    return `<div class="brand-item" data-cat="${item.category}">
+      <div class="brand-rank ${gClass}" style="${dimStyle}">${item.rank}</div>
+      <div class="brand-cat-badge" style="background:${cc.bg};color:${cc.text};">${item.category}</div>
+      <div class="brand-name">${item.name}</div>
+      <div class="brand-bar-wrap"><div class="brand-bar-fill" style="width:${pct}%;background:${cc.bar};"></div></div>
+      <div class="brand-pct">${pct}</div>
+    </div>`;
+  }).join('');
+}
+
+function filterBrands(cat) {
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`.filter-tab[data-cat="${cat}"]`).classList.add('active');
+  document.querySelectorAll('.brand-item').forEach(el => {
+    el.classList.toggle('hidden', cat !== '전체' && el.dataset.cat !== cat);
+  });
+}
+
+async function drillDown(categoryName) {
+  const panel = document.getElementById('drillPanel');
+  const content = document.getElementById('drillContent');
+  const title = document.getElementById('drillTitle');
+  panel.classList.add('show');
+  title.innerHTML = `🔍 <span style="color:#03C75A;">${categoryName}</span> 인기 브랜드 TOP 10`;
+  content.innerHTML = `<div class="drill-loading">⏳ ${categoryName} 브랜드 분석 중...</div>`;
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  try {
+    const res = await fetch('/api/drill', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ category: categoryName, period: currentPeriod })
+    });
+    if (!res.ok) throw new Error();
+    const result = await res.json();
+    const max = result.brands[0]?.score || 100;
+    content.innerHTML = `<div class="drill-grid">${result.brands.map(b => {
+      const pct = Math.round(b.score / max * 100);
+      const gClass = b.rank <= 3 ? `g${b.rank}` : '';
+      return `<div class="drill-brand-card">
+        <div class="drill-brand-rank ${gClass}">${b.rank}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="drill-brand-name">${b.name}</div>
+          <div class="drill-brand-bar-wrap"><div class="drill-brand-bar" style="width:${pct}%"></div></div>
+          <div class="drill-brand-score">${b.desc || ''}</div>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  } catch(e) {
+    content.innerHTML = `<div class="drill-loading" style="color:#e74c3c;">❌ 불러오기 실패. 다시 클릭해보세요.</div>`;
+  }
+}
+
+function closeDrill() { document.getElementById('drillPanel').classList.remove('show'); }
+document.getElementById('periodInput').addEventListener('keydown', e => { if (e.key === 'Enter') analyze(); });
+</script>
+</body>
+</html>
