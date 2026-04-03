@@ -159,11 +159,18 @@ body {
     <p>패션의류 · 스포츠레저 · 출산육아 · 패션잡화 브랜드 TOP 30 순위</p>
   </div>
 
-  <div class="search-box">
-    <label>분석 월</label>
-    <input type="text" id="periodInput" placeholder="예: 25년 4월 / 2024년 11월" value="25년 4월" />
-    <button class="main-btn" id="analyzeBtn" onclick="analyze()">분석하기</button>
-    <span class="hint">입력 월의 전년도 동월 쇼핑 트렌드를 분석합니다</span>
+  <div class="search-box" style="flex-direction: column; gap: 12px;">
+    <div style="display: flex; align-items: center; gap: 10px; width: 100%; flex-wrap: wrap;">
+      <label style="min-width: 70px;">🔑 API 키</label>
+      <input type="password" id="apiKeyInput" placeholder="sk-ant-... Anthropic API 키를 입력하세요" style="flex: 1; min-width: 200px;" />
+      <button class="main-btn" style="background: #555; padding: 9px 14px; font-size: 13px;" onclick="toggleKeyVisibility()" id="toggleKeyBtn">보기</button>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px; width: 100%; flex-wrap: wrap;">
+      <label style="min-width: 70px;">분석 월</label>
+      <input type="text" id="periodInput" placeholder="예: 25년 4월 / 2024년 11월" value="25년 4월" />
+      <button class="main-btn" id="analyzeBtn" onclick="analyze()">분석하기</button>
+    </div>
+    <span class="hint">⚠️ API 키는 브라우저에만 저장되며 서버에 보관되지 않습니다 · 입력 월의 전년도 동월 쇼핑 트렌드를 분석합니다</span>
   </div>
 
   <div class="status-bar" id="statusBar"></div>
@@ -211,6 +218,28 @@ const CAT_COLORS = {
   '패션잡화':   { bar:'#9333EA', bg:'#FDF4FF', text:'#9333EA' }
 };
 
+// API 키 관리
+function getApiKey() {
+  return document.getElementById('apiKeyInput').value.trim();
+}
+function saveApiKey() {
+  const key = getApiKey();
+  if (key) { try { localStorage.setItem('anthropic_api_key', key); } catch(e) {} }
+}
+function loadApiKey() {
+  try {
+    const saved = localStorage.getItem('anthropic_api_key');
+    if (saved) document.getElementById('apiKeyInput').value = saved;
+  } catch(e) {}
+}
+function toggleKeyVisibility() {
+  const input = document.getElementById('apiKeyInput');
+  const btn = document.getElementById('toggleKeyBtn');
+  if (input.type === 'password') { input.type = 'text'; btn.textContent = '숨기기'; }
+  else { input.type = 'password'; btn.textContent = '보기'; }
+}
+window.addEventListener('DOMContentLoaded', loadApiKey);
+
 function parsePeriod(input) {
   const m = input.match(/(\d{2,4})년\s*(\d{1,2})월/);
   if (!m) return null;
@@ -219,6 +248,14 @@ function parsePeriod(input) {
 }
 
 async function analyze() {
+  const apiKey = getApiKey();
+  if (!apiKey || !apiKey.startsWith('sk-ant-')) {
+    alert('Anthropic API 키를 입력해주세요. (sk-ant-로 시작)');
+    document.getElementById('apiKeyInput').focus();
+    return;
+  }
+  saveApiKey();
+
   const raw = document.getElementById('periodInput').value.trim();
   const parsed = parsePeriod(raw);
   if (!parsed) { alert('형식을 확인해주세요. 예: 25년 4월 / 2024년 11월'); return; }
@@ -240,7 +277,7 @@ async function analyze() {
   try {
     const res = await fetch('/api/analyze', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ period: currentPeriod, month: parsed.month })
+      body: JSON.stringify({ period: currentPeriod, month: parsed.month, apiKey })
     });
     if (!res.ok) { const e = await res.json(); throw new Error(e.error || '서버 오류'); }
     const result = await res.json();
@@ -314,9 +351,10 @@ async function drillDown(categoryName) {
   panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   try {
+    const apiKey = getApiKey();
     const res = await fetch('/api/drill', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ category: categoryName, period: currentPeriod })
+      body: JSON.stringify({ category: categoryName, period: currentPeriod, apiKey })
     });
     if (!res.ok) throw new Error();
     const result = await res.json();

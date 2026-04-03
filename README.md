@@ -1,79 +1,55 @@
-# 네이버 데이터랩 쇼핑 트렌드 분석
+# datalab-trend (Vercel 배포용)
 
-월별 인기 쇼핑 카테고리와 브랜드 순위를 AI로 분석하는 웹서비스입니다.
+네이버 데이터랩 쇼핑 트렌드 분석 웹서비스 — Vercel Serverless Functions 버전
 
----
+## 프로젝트 구조
 
-## 실행 환경
-- Node.js 18 이상
-- Anthropic API 키 (https://console.anthropic.com)
-
----
-
-## 설치 및 실행
-
-### 1단계 — 패키지 설치
-```bash
-npm install
 ```
-
-### 2단계 — API 키 설정
-`.env.example` 파일을 복사해서 `.env` 파일을 만들고, API 키를 입력합니다.
-```bash
-cp .env.example .env
-```
-`.env` 파일을 열어서 아래와 같이 수정:
-```
-ANTHROPIC_API_KEY=sk-ant-실제키입력
-```
-
-### 3단계 — 서버 실행
-```bash
-npm start
-```
-
-브라우저에서 http://localhost:3000 접속
-
----
-
-## 폴더 구조
-```
-datalab-trend/
-├── server.js          ← Node.js 백엔드 (API 키 보관)
+datalab-trend-vercel/
+├── api/
+│   ├── analyze.js    ← /api/analyze 서버리스 함수
+│   └── drill.js      ← /api/drill 서버리스 함수
+├── public/
+│   └── index.html    ← 프론트엔드
+├── vercel.json       ← 라우팅 설정
 ├── package.json
-├── .env               ← API 키 (절대 공유 금지!)
-├── .env.example       ← .env 예시 파일
-├── .gitignore
-└── public/
-    └── index.html     ← 프론트엔드
+└── .gitignore
 ```
 
----
+## 배포 방법
 
-## 클라우드 배포 방법
+### 방법 1: Vercel CLI 사용
 
-### Render.com (무료, 추천)
-1. https://render.com 회원가입
-2. GitHub에 이 프로젝트 업로드
-3. New Web Service 생성 → GitHub 연결
-4. Environment Variables에 `ANTHROPIC_API_KEY` 추가
-5. 배포 완료 → 발급받은 URL 공유
+```bash
+# 1. Vercel CLI 설치
+npm i -g vercel
 
-### Railway.app
-1. https://railway.app 회원가입
-2. New Project → Deploy from GitHub
-3. Variables 탭에서 `ANTHROPIC_API_KEY` 추가
-4. 자동 배포 완료
+# 2. 프로젝트 폴더로 이동
+cd datalab-trend-vercel
 
----
+# 3. 로그인
+vercel login
 
-## API 비용 안내
-- 모델: claude-haiku (가장 저렴한 모델 사용)
-- 분석 1회당 약 $0.001 ~ $0.003 수준
-- 요청 제한: 분당 10회 (rate limit 설정됨)
+# 4. 배포 (처음 실행 시 프로젝트 설정 안내가 나옵니다)
+vercel
 
----
+# 5. 프로덕션 배포
+vercel --prod
+```
 
-## 주의사항
-- `.env` 파일은 절대 GitHub에 올리지 마세요 (.gitignore에 포함됨)
-- API 키가 노출되면 즉시 https://console.anthropic.com 에서 삭제하세요
+### 방법 2: GitHub 연동 (추천)
+
+1. 이 폴더를 GitHub 저장소에 push
+2. [vercel.com](https://vercel.com) 에서 "New Project" 클릭
+3. GitHub 저장소 선택 → Import
+4. 환경 변수 설정 후 Deploy
+
+## 환경 변수 설정 (필수!)
+
+Vercel 대시보드 → 프로젝트 → Settings → Environment Variables 에서:
+
+| 이름 | 값 |
+|------|-----|
+| `ANTHROPIC_API_KEY` | `sk-ant-...` (본인의 Anthropic API 키) |
+
+⚠️ **API 키 없이는 작동하지 않습니다.** [console.anthropic.com](https://console.anthropic.com)에서 발급받으세요.
