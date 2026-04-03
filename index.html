@@ -41,10 +41,8 @@ body {
   box-shadow: 0 1px 6px rgba(0,0,0,0.05); display: none;
 }
 .status-bar.show { display: block; }
-
 .charts-grid { display: grid; grid-template-columns: 300px 1fr; gap: 18px; align-items: start; }
 @media (max-width: 700px) { .charts-grid { grid-template-columns: 1fr; } }
-
 .chart-card {
   background: #fff; border-radius: 14px; padding: 18px 20px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.07); display: none;
@@ -55,7 +53,6 @@ body {
   display: inline-block; background: #e8f9ef; color: #028a42;
   font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 20px; margin-bottom: 14px;
 }
-
 .rank-item {
   display: flex; align-items: center; gap: 8px;
   padding: 7px 0; border-bottom: 1px solid #f5f5f5;
@@ -79,8 +76,6 @@ body {
 .up { color: #03C75A; font-size: 11px; }
 .down { color: #e74c3c; font-size: 11px; }
 .flat { color: #aaa; font-size: 11px; }
-
-/* 필터 탭 */
 .filter-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
 .filter-tab {
   padding: 4px 11px; border-radius: 20px; font-size: 12px; font-weight: 600;
@@ -92,11 +87,8 @@ body {
 .filter-tab.active[data-cat="스포츠레저"] { background:#ECFDF5; color:#059669; border-color:#059669; }
 .filter-tab.active[data-cat="출산육아"]   { background:#FFF7ED; color:#EA580C; border-color:#EA580C; }
 .filter-tab.active[data-cat="패션잡화"]   { background:#FDF4FF; color:#9333EA; border-color:#9333EA; }
-
-/* 브랜드 2열 그리드 */
 .brand-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
 @media (max-width: 500px) { .brand-grid { grid-template-columns: 1fr; } }
-
 .brand-item {
   display: flex; align-items: center; gap: 7px;
   padding: 6px 3px; border-bottom: 1px solid #f5f5f5; transition: opacity .15s;
@@ -118,8 +110,6 @@ body {
 .brand-bar-wrap { width: 44px; background: #f0f0f0; border-radius: 3px; height: 5px; overflow: hidden; flex-shrink: 0; }
 .brand-bar-fill { height: 100%; border-radius: 3px; }
 .brand-pct { font-size: 10px; color: #bbb; min-width: 20px; text-align: right; flex-shrink: 0; }
-
-/* 드릴다운 패널 */
 .drill-panel {
   display: none; background: #fff; border-radius: 14px; padding: 20px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.10); margin-top: 18px;
@@ -142,6 +132,70 @@ body {
 .drill-brand-bar { height: 100%; border-radius: 3px; background: #03C75A; }
 .drill-brand-score { font-size: 10px; color: #aaa; margin-top: 3px; }
 
+/* 네이버 검색광고 설정 */
+.naver-ad-section {
+  background: #fff; border-radius: 14px; padding: 16px 24px;
+  margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+}
+.naver-ad-toggle {
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  font-size: 14px; font-weight: 600; color: #444; user-select: none;
+}
+.naver-ad-toggle input[type="checkbox"] {
+  width: 18px; height: 18px; accent-color: #03C75A; cursor: pointer;
+}
+.naver-ad-toggle .toggle-arrow { font-size: 11px; color: #aaa; transition: transform .2s; }
+.naver-ad-toggle .toggle-arrow.open { transform: rotate(90deg); }
+.naver-ad-fields { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid #f0f0f0; }
+.naver-ad-fields.show { display: block; }
+.naver-ad-fields .field-row {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;
+}
+.naver-ad-fields label { font-size: 13px; color: #555; font-weight: 600; min-width: 90px; }
+.naver-ad-fields input {
+  flex: 1; min-width: 180px; padding: 8px 12px;
+  border: 1.5px solid #e0e0e0; border-radius: 9px; font-size: 14px; outline: none; transition: border-color .2s;
+}
+.naver-ad-fields input:focus { border-color: #03C75A; }
+.naver-ad-hint { font-size: 11px; color: #aaa; margin-top: 4px; line-height: 1.6; }
+.naver-ad-hint a { color: #03C75A; text-decoration: none; }
+
+/* 합산 테이블 */
+.merged-table-card {
+  display: none; background: #fff; border-radius: 14px; padding: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.07); margin-top: 20px; border-top: 3px solid #03C75A;
+}
+.merged-table-card.show { display: block; }
+.merged-table-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;
+}
+.merged-table-header .card-title { margin-bottom: 0; }
+.export-btn {
+  background: #f0f0f0; border: 1.5px solid #ddd; border-radius: 8px;
+  padding: 6px 14px; font-size: 12px; font-weight: 600; color: #555; cursor: pointer; transition: all .15s;
+}
+.export-btn:hover { background: #e8e8e8; border-color: #bbb; }
+.merged-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.merged-table { width: 100%; border-collapse: collapse; font-size: 12px; white-space: nowrap; }
+.merged-table thead th {
+  background: #f8faf9; border-bottom: 2px solid #e0e0e0;
+  padding: 10px 12px; text-align: center; font-weight: 700; color: #333;
+  position: sticky; top: 0; z-index: 1;
+}
+.merged-table thead th.group-trend { background: #f0fdf5; color: #028a42; }
+.merged-table thead th.group-ad { background: #eff6ff; color: #1d4ed8; }
+.merged-table tbody td {
+  padding: 8px 12px; border-bottom: 1px solid #f0f0f0; text-align: center; color: #444;
+}
+.merged-table tbody tr:hover { background: #fafffe; }
+.merged-table .td-brand { text-align: left; font-weight: 600; color: #111; }
+.merged-table .td-cat { text-align: center; }
+.merged-table .num-cell { text-align: right; font-variant-numeric: tabular-nums; }
+.comp-high { color: #dc2626; font-weight: 700; }
+.comp-mid { color: #d97706; font-weight: 600; }
+.comp-low { color: #059669; font-weight: 600; }
+.not-found { color: #ccc; }
+.merged-loading { text-align: center; padding: 30px; font-size: 13px; color: #888; }
 .footer-note { text-align: center; font-size: 11px; color: #ccc; margin-top: 18px; padding-bottom: 4px; }
 .footer-note a { color: #03C75A; text-decoration: none; }
 </style>
@@ -175,6 +229,34 @@ body {
       · 입력 월의 전년도 동월 쇼핑 트렌드를 분석합니다</span>
   </div>
 
+  <!-- 네이버 검색광고 API 설정 -->
+  <div class="naver-ad-section">
+    <label class="naver-ad-toggle" onclick="toggleNaverAd()">
+      <input type="checkbox" id="naverAdEnabled" />
+      <span>📊 네이버 검색광고 데이터 합산</span>
+      <span class="toggle-arrow" id="naverAdArrow">▶</span>
+    </label>
+    <div class="naver-ad-fields" id="naverAdFields">
+      <div class="field-row">
+        <label>Customer ID</label>
+        <input type="text" id="naverCustomerId" placeholder="광고주 ID (숫자)" />
+      </div>
+      <div class="field-row">
+        <label>API 키</label>
+        <input type="text" id="naverApiKey" placeholder="Access License (API Key)" />
+      </div>
+      <div class="field-row">
+        <label>Secret 키</label>
+        <input type="password" id="naverSecretKey" placeholder="Secret Key" />
+      </div>
+      <div class="naver-ad-hint">
+        ⚠️ 인증 정보는 브라우저에만 저장됩니다 ·
+        <a href="https://searchad.naver.com" target="_blank">searchad.naver.com</a> →
+        도구 → API 사용 관리에서 발급
+      </div>
+    </div>
+  </div>
+
   <div class="status-bar" id="statusBar"></div>
 
   <div class="charts-grid" id="chartsGrid">
@@ -183,7 +265,6 @@ body {
       <div class="period-badge" id="catPeriod"></div>
       <div id="catList"></div>
     </div>
-
     <div class="chart-card" id="brandCard">
       <div class="card-title">🏷️ 인기 브랜드 TOP 30</div>
       <div class="period-badge" id="brandPeriod"></div>
@@ -196,7 +277,6 @@ body {
       </div>
       <div class="brand-grid" id="brandList"></div>
     </div>
-
     <div class="drill-panel" id="drillPanel">
       <div class="drill-header">
         <div class="drill-title" id="drillTitle"></div>
@@ -206,6 +286,16 @@ body {
     </div>
   </div>
 
+  <!-- 합산 결과 테이블 -->
+  <div class="merged-table-card" id="mergedTableCard">
+    <div class="merged-table-header">
+      <div class="card-title">📊 트렌드 + 검색광고 합산표</div>
+      <button class="export-btn" onclick="exportCSV()">📥 CSV 다운로드</button>
+    </div>
+    <div class="period-badge" id="mergedPeriod"></div>
+    <div id="mergedTableContent"></div>
+  </div>
+
   <div class="footer-note" id="footerNote" style="display:none">
     AI 분석 기반 · 라스트원 브랜드유통
   </div>
@@ -213,42 +303,69 @@ body {
 
 <script>
 let currentPeriod = '';
+let lastBrands = [];
+let lastMergedData = [];
 const CAT_COLORS = {
   '패션의류':   { bar:'#4F46E5', bg:'#EEF2FF', text:'#4F46E5' },
   '스포츠레저': { bar:'#059669', bg:'#ECFDF5', text:'#059669' },
   '출산육아':   { bar:'#EA580C', bg:'#FFF7ED', text:'#EA580C' },
   '패션잡화':   { bar:'#9333EA', bg:'#FDF4FF', text:'#9333EA' }
 };
+function esc(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 
-// HTML 이스케이프 유틸리티 (XSS 방지)
-function esc(str) {
-  const d = document.createElement('div');
-  d.textContent = str;
-  return d.innerHTML;
-}
-
-// API 키 관리
-function getApiKey() {
-  return document.getElementById('apiKeyInput').value.trim();
-}
-function saveApiKey() {
-  const key = getApiKey();
-  if (key) { try { localStorage.setItem('gemini_api_key', key); } catch(e) {} }
-}
-function loadApiKey() {
-  try {
-    const saved = localStorage.getItem('gemini_api_key');
-    if (saved) document.getElementById('apiKeyInput').value = saved;
-  } catch(e) {}
-}
-
+/* API 키 관리 */
+function getApiKey() { return document.getElementById('apiKeyInput').value.trim(); }
+function saveApiKey() { const key = getApiKey(); if (key) { try { localStorage.setItem('gemini_api_key', key); } catch(e) {} } }
+function loadApiKey() { try { const s = localStorage.getItem('gemini_api_key'); if (s) document.getElementById('apiKeyInput').value = s; } catch(e) {} }
 function toggleKeyVisibility() {
   const input = document.getElementById('apiKeyInput');
   const btn = document.getElementById('toggleKeyBtn');
   if (input.type === 'password') { input.type = 'text'; btn.textContent = '숨기기'; }
   else { input.type = 'password'; btn.textContent = '보기'; }
 }
-window.addEventListener('DOMContentLoaded', loadApiKey);
+
+/* 네이버 검색광고 API 키 관리 */
+function getNaverCreds() {
+  return {
+    customerId: document.getElementById('naverCustomerId').value.trim(),
+    apiKey: document.getElementById('naverApiKey').value.trim(),
+    secretKey: document.getElementById('naverSecretKey').value.trim()
+  };
+}
+function saveNaverCreds() {
+  const c = getNaverCreds();
+  try {
+    localStorage.setItem('naver_ad_cid', c.customerId);
+    localStorage.setItem('naver_ad_ak', c.apiKey);
+    localStorage.setItem('naver_ad_sk', c.secretKey);
+    localStorage.setItem('naver_ad_on', document.getElementById('naverAdEnabled').checked ? '1' : '0');
+  } catch(e) {}
+}
+function loadNaverCreds() {
+  try {
+    const cid = localStorage.getItem('naver_ad_cid');
+    const ak = localStorage.getItem('naver_ad_ak');
+    const sk = localStorage.getItem('naver_ad_sk');
+    const en = localStorage.getItem('naver_ad_on');
+    if (cid) document.getElementById('naverCustomerId').value = cid;
+    if (ak) document.getElementById('naverApiKey').value = ak;
+    if (sk) document.getElementById('naverSecretKey').value = sk;
+    if (en === '1') {
+      document.getElementById('naverAdEnabled').checked = true;
+      document.getElementById('naverAdFields').classList.add('show');
+      document.getElementById('naverAdArrow').classList.add('open');
+    }
+  } catch(e) {}
+}
+function toggleNaverAd() {
+  const cb = document.getElementById('naverAdEnabled');
+  const fields = document.getElementById('naverAdFields');
+  const arrow = document.getElementById('naverAdArrow');
+  const willBeChecked = !cb.checked;
+  fields.classList.toggle('show', willBeChecked);
+  arrow.classList.toggle('open', willBeChecked);
+}
+window.addEventListener('DOMContentLoaded', () => { loadApiKey(); loadNaverCreds(); });
 
 function parsePeriod(input) {
   const m = input.match(/(\d{2,4})년\s*(\d{1,2})월/);
@@ -257,30 +374,26 @@ function parsePeriod(input) {
   return { year: y, month: parseInt(m[2]) };
 }
 
+/* 메인 분석 */
 async function analyze() {
   const apiKey = getApiKey();
-  // Gemini API 키는 보통 'AIza'로 시작하지만 강제하지 않는 것이 안전합니다.
-  if (!apiKey) {
-    alert('Gemini API 키를 입력해주세요.');
-    document.getElementById('apiKeyInput').focus();
-    return;
-  }
-  saveApiKey();
+  if (!apiKey) { alert('Gemini API 키를 입력해주세요.'); document.getElementById('apiKeyInput').focus(); return; }
+  saveApiKey(); saveNaverCreds();
 
   const raw = document.getElementById('periodInput').value.trim();
   const parsed = parsePeriod(raw);
   if (!parsed) { alert('형식을 확인해주세요. 예: 25년 4월 / 2024년 11월'); return; }
-  
-  const prevYear = parsed.year;
-  currentPeriod = `${prevYear}년 ${parsed.month}월`;
+
+  currentPeriod = `${parsed.year}년 ${parsed.month}월`;
   const btn = document.getElementById('analyzeBtn');
   btn.disabled = true; closeDrill();
 
   const sb = document.getElementById('statusBar');
   sb.className = 'status-bar show';
-  sb.textContent = `⏳ ${currentPeriod} 트렌드 분석 중...`;
+  sb.textContent = '⏳ ' + currentPeriod + ' 트렌드 분석 중...';
   document.getElementById('catCard').classList.remove('show');
   document.getElementById('brandCard').classList.remove('show');
+  document.getElementById('mergedTableCard').classList.remove('show');
   document.getElementById('footerNote').style.display = 'none';
   document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
   document.querySelector('.filter-tab[data-cat="전체"]').classList.add('active');
@@ -293,11 +406,11 @@ async function analyze() {
     const rawText = await res.text();
     let result;
     try { result = JSON.parse(rawText); } catch(parseErr) {
-      throw new Error('API 경로에 접근할 수 없습니다. 배포 상태를 확인해주세요. (응답: ' + rawText.substring(0, 80) + '...)');
+      throw new Error('API 경로에 접근할 수 없습니다. (응답: ' + rawText.substring(0, 80) + '...)');
     }
-    if (!res.ok) { throw new Error(result.error || '서버 오류'); }
+    if (!res.ok) throw new Error(result.error || '서버 오류');
 
-    sb.textContent = `✅ ${result.period} 분석 완료 — ${result.summary || ''}`;
+    sb.textContent = '✅ ' + result.period + ' 분석 완료 — ' + (result.summary || '');
     document.getElementById('catPeriod').textContent = result.period;
     document.getElementById('brandPeriod').textContent = result.period;
     renderCategoryList('catList', result.categories);
@@ -305,30 +418,141 @@ async function analyze() {
     document.getElementById('catCard').classList.add('show');
     document.getElementById('brandCard').classList.add('show');
     document.getElementById('footerNote').style.display = 'block';
+    lastBrands = result.brands;
+
+    // 네이버 검색광고 합산
+    const naverEnabled = document.getElementById('naverAdEnabled').checked;
+    if (naverEnabled) {
+      const creds = getNaverCreds();
+      if (!creds.customerId || !creds.apiKey || !creds.secretKey) {
+        sb.textContent += ' ⚠️ 네이버 검색광고 인증 정보가 비어있어 합산을 건너뜁니다.';
+      } else {
+        await fetchAndMergeSearchAd(result.brands, creds, result.period);
+      }
+    }
   } catch (e) { sb.textContent = '❌ 오류: ' + e.message; }
   btn.disabled = false;
 }
 
+/* 네이버 검색광고 조회 + 합산 */
+async function fetchAndMergeSearchAd(brands, creds, period) {
+  const sb = document.getElementById('statusBar');
+  const tableCard = document.getElementById('mergedTableCard');
+  const tableContent = document.getElementById('mergedTableContent');
+  document.getElementById('mergedPeriod').textContent = period;
+  sb.textContent += ' ⏳ 검색광고 데이터 조회 중...';
+  tableCard.classList.add('show');
+  tableContent.innerHTML = '<div class="merged-loading">⏳ 네이버 검색광고 API에서 데이터를 가져오는 중...<br><span style="font-size:11px;color:#bbb;">브랜드 30개 조회 시 약 5~10초 소요</span></div>';
+
+  try {
+    const brandNames = brands.map(b => b.name);
+    const res = await fetch('/api/searchad', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ brands: brandNames, customerId: creds.customerId, apiKey: creds.apiKey, secretKey: creds.secretKey })
+    });
+    const rawText = await res.text();
+    let adResult;
+    try { adResult = JSON.parse(rawText); } catch(e) { throw new Error('검색광고 API 응답 파싱 실패'); }
+    if (!res.ok) throw new Error(adResult.error || '검색광고 API 서버 오류');
+
+    const adMap = {};
+    for (const item of adResult.results) adMap[item.brand] = item;
+
+    const merged = brands.map(b => {
+      const ad = adMap[b.name] || { found: false };
+      return {
+        rank: b.rank, name: b.name, category: b.category, trendScore: b.score,
+        pcSearch: ad.found ? ad.pcSearch : '-',
+        mobileSearch: ad.found ? ad.mobileSearch : '-',
+        totalSearch: ad.found ? ad.totalSearch : 0,
+        avgCpc: ad.found ? ad.avgCpc : 0,
+        compIdx: ad.found ? ad.compIdx : '-',
+        found: ad.found
+      };
+    });
+    lastMergedData = merged;
+    renderMergedTable(merged);
+    sb.textContent = '✅ ' + period + ' 트렌드 + 검색광고 합산 완료!';
+  } catch (e) {
+    tableContent.innerHTML = '<div class="merged-loading" style="color:#e74c3c;">❌ 검색광고 조회 실패: ' + esc(e.message) + '<br><span style="font-size:11px;color:#aaa;">인증 정보를 다시 확인해주세요.</span></div>';
+    sb.textContent += ' ❌ 검색광고 조회 실패';
+  }
+}
+
+/* 합산 테이블 렌더링 */
+function renderMergedTable(data) {
+  const el = document.getElementById('mergedTableContent');
+  const fmtNum = (v) => {
+    if (v === '-' || v === undefined || v === null) return '<span class="not-found">-</span>';
+    if (typeof v === 'string' && v.includes('<')) return v;
+    const n = Number(v); if (isNaN(n)) return v;
+    return n.toLocaleString('ko-KR');
+  };
+  const compClass = (v) => {
+    if (v === '높음') return 'comp-high';
+    if (v === '중간') return 'comp-mid';
+    if (v === '낮음') return 'comp-low';
+    return 'not-found';
+  };
+  const catBadge = (cat) => {
+    const cc = CAT_COLORS[cat] || { bg:'#f0f0f0', text:'#888' };
+    return '<span style="background:' + cc.bg + ';color:' + cc.text + ';font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;">' + esc(cat) + '</span>';
+  };
+  let html = '<div class="merged-table-wrap"><table class="merged-table"><thead>';
+  html += '<tr><th rowspan="2" style="width:36px">#</th><th rowspan="2" style="min-width:90px">브랜드</th><th rowspan="2">카테고리</th>';
+  html += '<th class="group-trend" colspan="1">쇼핑트렌드</th>';
+  html += '<th class="group-ad" colspan="4">네이버 검색광고</th></tr>';
+  html += '<tr><th class="group-trend">점수</th>';
+  html += '<th class="group-ad">PC검색량</th><th class="group-ad">모바일검색량</th>';
+  html += '<th class="group-ad">평균CPC</th><th class="group-ad">경쟁강도</th></tr></thead><tbody>';
+  for (const row of data) {
+    html += '<tr>';
+    html += '<td style="font-weight:700;color:#888;">' + row.rank + '</td>';
+    html += '<td class="td-brand">' + esc(row.name) + '</td>';
+    html += '<td class="td-cat">' + catBadge(row.category) + '</td>';
+    html += '<td class="num-cell" style="font-weight:700;color:#03C75A;">' + row.trendScore + '</td>';
+    html += '<td class="num-cell">' + fmtNum(row.pcSearch) + '</td>';
+    html += '<td class="num-cell">' + fmtNum(row.mobileSearch) + '</td>';
+    html += '<td class="num-cell">' + (row.avgCpc ? '₩' + fmtNum(row.avgCpc) : '<span class="not-found">-</span>') + '</td>';
+    html += '<td class="' + compClass(row.compIdx) + '">' + (row.compIdx || '-') + '</td>';
+    html += '</tr>';
+  }
+  html += '</tbody></table></div>';
+  el.innerHTML = html;
+}
+
+/* CSV 내보내기 */
+function exportCSV() {
+  if (!lastMergedData.length) { alert('데이터가 없습니다. 먼저 분석을 실행해주세요.'); return; }
+  const headers = ['순위','브랜드','카테고리','트렌드점수','PC검색량','모바일검색량','총검색량','평균CPC','경쟁강도'];
+  const rows = lastMergedData.map(r => [r.rank, r.name, r.category, r.trendScore, r.pcSearch, r.mobileSearch, r.totalSearch, r.avgCpc, r.compIdx]);
+  const bom = '\uFEFF';
+  const csv = bom + [headers, ...rows].map(r => r.map(v => '"' + v + '"').join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url;
+  a.download = '트렌드_검색광고_합산_' + currentPeriod.replace(/\s/g,'') + '.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+/* 기존 렌더링 */
 function renderCategoryList(id, items) {
   const el = document.getElementById(id);
   const max = items[0]?.score || 100;
   el.innerHTML = items.map(item => {
     const pct = Math.round(item.score / max * 100);
-    const gClass = item.rank <= 3 ? `g${item.rank}` : '';
-    const trendHtml = item.trend === '상승' ? `<span class="up">▲ 상승</span>`
-      : item.trend === '하락' ? `<span class="down">▼ 하락</span>`
-      : `<span class="flat">— 유지</span>`;
+    const gClass = item.rank <= 3 ? 'g' + item.rank : '';
+    const trendHtml = item.trend === '상승' ? '<span class="up">▲ 상승</span>'
+      : item.trend === '하락' ? '<span class="down">▼ 하락</span>'
+      : '<span class="flat">— 유지</span>';
     const safeName = esc(item.name);
     const attrName = safeName.replace(/'/g, '&#39;');
-    return `<div class="rank-item clickable" onclick="drillDown('${attrName}')">
-      <div class="rank-num ${gClass}">${item.rank}</div>
-      <div class="rank-info">
-        <div class="rank-name">${safeName}</div>
-        <div>${trendHtml} <span class="drill-hint">· 탭하면 브랜드 보기 👆</span></div>
-      </div>
-      <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div>
-      <div class="rank-pct">${pct}</div>
-    </div>`;
+    return '<div class="rank-item clickable" onclick="drillDown(\'' + attrName + '\')">'
+      + '<div class="rank-num ' + gClass + '">' + item.rank + '</div>'
+      + '<div class="rank-info"><div class="rank-name">' + safeName + '</div>'
+      + '<div>' + trendHtml + ' <span class="drill-hint">· 탭하면 브랜드 보기 👆</span></div></div>'
+      + '<div class="bar-wrap"><div class="bar-fill" style="width:' + pct + '%"></div></div>'
+      + '<div class="rank-pct">' + pct + '</div></div>';
   }).join('');
 }
 
@@ -340,21 +564,18 @@ function renderBrandList(id, items) {
     const gClass = item.rank === 1 ? 'g1' : item.rank === 2 ? 'g2' : item.rank === 3 ? 'g3' : '';
     const dimStyle = item.rank > 10 ? 'background:#f5f5f5;color:#ccc;font-size:10px;' : '';
     const cc = CAT_COLORS[item.category] || { bar:'#aaa', bg:'#f0f0f0', text:'#888' };
-    const safeName = esc(item.name);
-    const safeCat = esc(item.category);
-    return `<div class="brand-item" data-cat="${safeCat}">
-      <div class="brand-rank ${gClass}" style="${dimStyle}">${item.rank}</div>
-      <div class="brand-cat-badge" style="background:${cc.bg};color:${cc.text};">${safeCat}</div>
-      <div class="brand-name">${safeName}</div>
-      <div class="brand-bar-wrap"><div class="brand-bar-fill" style="width:${pct}%;background:${cc.bar};"></div></div>
-      <div class="brand-pct">${pct}</div>
-    </div>`;
+    return '<div class="brand-item" data-cat="' + esc(item.category) + '">'
+      + '<div class="brand-rank ' + gClass + '" style="' + dimStyle + '">' + item.rank + '</div>'
+      + '<div class="brand-cat-badge" style="background:' + cc.bg + ';color:' + cc.text + ';">' + esc(item.category) + '</div>'
+      + '<div class="brand-name">' + esc(item.name) + '</div>'
+      + '<div class="brand-bar-wrap"><div class="brand-bar-fill" style="width:' + pct + '%;background:' + cc.bar + ';"></div></div>'
+      + '<div class="brand-pct">' + pct + '</div></div>';
   }).join('');
 }
 
 function filterBrands(cat) {
   document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
-  document.querySelector(`.filter-tab[data-cat="${cat}"]`).classList.add('active');
+  document.querySelector('.filter-tab[data-cat="' + cat + '"]').classList.add('active');
   document.querySelectorAll('.brand-item').forEach(el => {
     el.classList.toggle('hidden', cat !== '전체' && el.dataset.cat !== cat);
   });
@@ -365,10 +586,9 @@ async function drillDown(categoryName) {
   const content = document.getElementById('drillContent');
   const title = document.getElementById('drillTitle');
   panel.classList.add('show');
-  title.innerHTML = `🔍 <span style="color:#03C75A;">${esc(categoryName)}</span> 인기 브랜드 TOP 10`;
-  content.innerHTML = `<div class="drill-loading">⏳ ${esc(categoryName)} 브랜드 분석 중...</div>`;
+  title.innerHTML = '🔍 <span style="color:#03C75A;">' + esc(categoryName) + '</span> 인기 브랜드 TOP 10';
+  content.innerHTML = '<div class="drill-loading">⏳ ' + esc(categoryName) + ' 브랜드 분석 중...</div>';
   panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
   try {
     const apiKey = getApiKey();
     const res = await fetch('/api/drill', {
@@ -380,23 +600,18 @@ async function drillDown(categoryName) {
     try { result = JSON.parse(rawText); } catch(e) { throw new Error('API 응답 파싱 실패'); }
     if (!res.ok) throw new Error(result.error || '서버 오류');
     const max = result.brands[0]?.score || 100;
-    content.innerHTML = `<div class="drill-grid">${result.brands.map(b => {
+    content.innerHTML = '<div class="drill-grid">' + result.brands.map(b => {
       const pct = Math.round(b.score / max * 100);
-      const gClass = b.rank <= 3 ? `g${b.rank}` : '';
-      return `<div class="drill-brand-card">
-        <div class="drill-brand-rank ${gClass}">${b.rank}</div>
-        <div style="flex:1;min-width:0;">
-          <div class="drill-brand-name">${esc(b.name)}</div>
-          <div class="drill-brand-bar-wrap"><div class="drill-brand-bar" style="width:${pct}%"></div></div>
-          <div class="drill-brand-score">${esc(b.desc || '')}</div>
-        </div>
-      </div>`;
-    }).join('')}</div>`;
+      const gClass = b.rank <= 3 ? 'g' + b.rank : '';
+      return '<div class="drill-brand-card"><div class="drill-brand-rank ' + gClass + '">' + b.rank + '</div>'
+        + '<div style="flex:1;min-width:0;"><div class="drill-brand-name">' + esc(b.name) + '</div>'
+        + '<div class="drill-brand-bar-wrap"><div class="drill-brand-bar" style="width:' + pct + '%"></div></div>'
+        + '<div class="drill-brand-score">' + esc(b.desc || '') + '</div></div></div>';
+    }).join('') + '</div>';
   } catch(e) {
-    content.innerHTML = `<div class="drill-loading" style="color:#e74c3c;">❌ 불러오기 실패. 다시 클릭해보세요.</div>`;
+    content.innerHTML = '<div class="drill-loading" style="color:#e74c3c;">❌ 불러오기 실패. 다시 클릭해보세요.</div>';
   }
 }
-
 function closeDrill() { document.getElementById('drillPanel').classList.remove('show'); }
 document.getElementById('periodInput').addEventListener('keydown', e => { if (e.key === 'Enter') analyze(); });
 </script>
