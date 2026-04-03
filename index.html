@@ -271,7 +271,7 @@ async function analyze() {
   const parsed = parsePeriod(raw);
   if (!parsed) { alert('형식을 확인해주세요. 예: 25년 4월 / 2024년 11월'); return; }
   
-  const prevYear = parsed.year - 1;
+  const prevYear = parsed.year;
   currentPeriod = `${prevYear}년 ${parsed.month}월`;
   const btn = document.getElementById('analyzeBtn');
   btn.disabled = true; closeDrill();
