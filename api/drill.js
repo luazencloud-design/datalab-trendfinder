@@ -35,7 +35,12 @@ JSON만 반환 (마크다운 없이):
     const data = await response.json();
     if (data.error) throw new Error(data.error.message);
 
-    const text = data.candidates[0].content.parts[0].text;
+    const candidate = data.candidates && data.candidates[0];
+    if (!candidate || !candidate.content || !candidate.content.parts || !candidate.content.parts[0]) {
+      const reason = candidate?.finishReason || '알 수 없음';
+      throw new Error(`Gemini 응답이 비어 있습니다 (사유: ${reason}). 다시 시도해주세요.`);
+    }
+    const text = candidate.content.parts[0].text;
     res.json(JSON.parse(text));
   } catch (e) {
     console.error('드릴다운 오류:', e.message);

@@ -220,6 +220,13 @@ const CAT_COLORS = {
   '패션잡화':   { bar:'#9333EA', bg:'#FDF4FF', text:'#9333EA' }
 };
 
+// HTML 이스케이프 유틸리티 (XSS 방지)
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
 // API 키 관리
 function getApiKey() {
   return document.getElementById('apiKeyInput').value.trim();
@@ -311,10 +318,12 @@ function renderCategoryList(id, items) {
     const trendHtml = item.trend === '상승' ? `<span class="up">▲ 상승</span>`
       : item.trend === '하락' ? `<span class="down">▼ 하락</span>`
       : `<span class="flat">— 유지</span>`;
-    return `<div class="rank-item clickable" onclick="drillDown('${item.name.replace(/'/g,"\\'")}')">
+    const safeName = esc(item.name);
+    const attrName = safeName.replace(/'/g, '&#39;');
+    return `<div class="rank-item clickable" onclick="drillDown('${attrName}')">
       <div class="rank-num ${gClass}">${item.rank}</div>
       <div class="rank-info">
-        <div class="rank-name">${item.name}</div>
+        <div class="rank-name">${safeName}</div>
         <div>${trendHtml} <span class="drill-hint">· 탭하면 브랜드 보기 👆</span></div>
       </div>
       <div class="bar-wrap"><div class="bar-fill" style="width:${pct}%"></div></div>
@@ -331,10 +340,12 @@ function renderBrandList(id, items) {
     const gClass = item.rank === 1 ? 'g1' : item.rank === 2 ? 'g2' : item.rank === 3 ? 'g3' : '';
     const dimStyle = item.rank > 10 ? 'background:#f5f5f5;color:#ccc;font-size:10px;' : '';
     const cc = CAT_COLORS[item.category] || { bar:'#aaa', bg:'#f0f0f0', text:'#888' };
-    return `<div class="brand-item" data-cat="${item.category}">
+    const safeName = esc(item.name);
+    const safeCat = esc(item.category);
+    return `<div class="brand-item" data-cat="${safeCat}">
       <div class="brand-rank ${gClass}" style="${dimStyle}">${item.rank}</div>
-      <div class="brand-cat-badge" style="background:${cc.bg};color:${cc.text};">${item.category}</div>
-      <div class="brand-name">${item.name}</div>
+      <div class="brand-cat-badge" style="background:${cc.bg};color:${cc.text};">${safeCat}</div>
+      <div class="brand-name">${safeName}</div>
       <div class="brand-bar-wrap"><div class="brand-bar-fill" style="width:${pct}%;background:${cc.bar};"></div></div>
       <div class="brand-pct">${pct}</div>
     </div>`;
@@ -354,8 +365,8 @@ async function drillDown(categoryName) {
   const content = document.getElementById('drillContent');
   const title = document.getElementById('drillTitle');
   panel.classList.add('show');
-  title.innerHTML = `🔍 <span style="color:#03C75A;">${categoryName}</span> 인기 브랜드 TOP 10`;
-  content.innerHTML = `<div class="drill-loading">⏳ ${categoryName} 브랜드 분석 중...</div>`;
+  title.innerHTML = `🔍 <span style="color:#03C75A;">${esc(categoryName)}</span> 인기 브랜드 TOP 10`;
+  content.innerHTML = `<div class="drill-loading">⏳ ${esc(categoryName)} 브랜드 분석 중...</div>`;
   panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   try {
@@ -375,9 +386,9 @@ async function drillDown(categoryName) {
       return `<div class="drill-brand-card">
         <div class="drill-brand-rank ${gClass}">${b.rank}</div>
         <div style="flex:1;min-width:0;">
-          <div class="drill-brand-name">${b.name}</div>
+          <div class="drill-brand-name">${esc(b.name)}</div>
           <div class="drill-brand-bar-wrap"><div class="drill-brand-bar" style="width:${pct}%"></div></div>
-          <div class="drill-brand-score">${b.desc || ''}</div>
+          <div class="drill-brand-score">${esc(b.desc || '')}</div>
         </div>
       </div>`;
     }).join('')}</div>`;

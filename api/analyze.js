@@ -40,8 +40,13 @@ JSON만 반환 (마크다운 없이):
     const data = await response.json();
     if (data.error) throw new Error(data.error.message);
 
-    // Gemini 응답 구조에서 텍스트 추출
-    const text = data.candidates[0].content.parts[0].text;
+    // Gemini 응답 구조에서 텍스트 추출 (null-safety 추가)
+    const candidate = data.candidates && data.candidates[0];
+    if (!candidate || !candidate.content || !candidate.content.parts || !candidate.content.parts[0]) {
+      const reason = candidate?.finishReason || '알 수 없음';
+      throw new Error(`Gemini 응답이 비어 있습니다 (사유: ${reason}). 다시 시도해주세요.`);
+    }
+    const text = candidate.content.parts[0].text;
     
     // 이미 완벽한 JSON 문자열이 반환되므로 바로 파싱
     res.json(JSON.parse(text));
