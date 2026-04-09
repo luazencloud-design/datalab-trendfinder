@@ -20,7 +20,7 @@ module.exports = async function handler(req, res) {
 
     for (let i = 0; i < brands.length; i += batchSize) {
       const batch = brands.slice(i, i + batchSize);
-      const hintKeywords = batch.join('\n');
+      const hintKeywords = batch.join(',');
 
       const timestamp = Date.now().toString();
       const method = 'GET';
