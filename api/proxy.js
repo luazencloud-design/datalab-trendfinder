@@ -18,13 +18,21 @@ module.exports = async function handler(req, res) {
     const targetUrl = decodeURIComponent(url);
     const customHeaders = headers ? JSON.parse(decodeURIComponent(headers)) : {};
 
-    const response = await fetch(targetUrl, {
-      method: 'GET',
+    const fetchOpts = {
+      method: req.method === 'POST' ? 'POST' : 'GET',
       headers: {
         ...customHeaders,
         'Host': new URL(targetUrl).hostname,
       },
-    });
+    };
+
+    // POST일 때 body 전달
+    if (req.method === 'POST' && req.body) {
+      fetchOpts.headers['Content-Type'] = customHeaders['Content-Type'] || 'application/json';
+      fetchOpts.body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+    }
+
+    const response = await fetch(targetUrl, fetchOpts);
 
     const contentType = response.headers.get('content-type') || 'application/json';
     const body = await response.text();
