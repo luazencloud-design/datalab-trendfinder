@@ -601,7 +601,7 @@ async function analyze() {
   btn.disabled = false;
 }
 
-/* 네이버 검색광고 조회 + 합산 */
+/* 네이버 검색광고 조회 + 합산 (클라이언트측 — 프록시 지원) */
 async function fetchAndMergeSearchAd(brands, creds, period) {
   const sb = document.getElementById('statusBar');
   const tableCard = document.getElementById('mergedTableCard');
@@ -612,18 +612,64 @@ async function fetchAndMergeSearchAd(brands, creds, period) {
   tableContent.innerHTML = '<div class="merged-loading">⏳ 네이버 검색광고 API에서 데이터를 가져오는 중...<br><span style="font-size:11px;color:#bbb;">브랜드 30개 조회 시 약 5~10초 소요</span></div>';
 
   try {
-    const brandNames = brands.map(b => b.name);
-    const res = await fetch('/api/searchad', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ brands: brandNames, customerId: creds.customerId, apiKey: creds.apiKey, secretKey: creds.secretKey })
-    });
-    const rawText = await res.text();
-    let adResult;
-    try { adResult = JSON.parse(rawText); } catch(e) { throw new Error('검색광고 API 응답 파싱 실패'); }
-    if (!res.ok) throw new Error(adResult.error || '검색광고 API 서버 오류');
-
+    const brandNames = brands.map(b => b.name).filter(n => n && n.trim());
     const adMap = {};
-    for (const item of adResult.results) adMap[item.brand] = item;
+
+    // 5개씩 나눠서 호출 (네이버 API 제한)
+    const CHUNK = 5;
+    const chunks = [];
+    for (let i = 0; i < brandNames.length; i += CHUNK) {
+      chunks.push(brandNames.slice(i, i + CHUNK));
+    }
+
+    naverLog('🔄 네이버 검색광고 API 키워드 조회 시작...', 'log-info');
+    let totalFound = 0;
+
+    for (let ci = 0; ci < chunks.length; ci++) {
+      const chunk = chunks[ci];
+      naverLog(`📡 요청 ${ci+1}/${chunks.length}: [${chunk.join(', ')}]`, 'log-info');
+
+      const data = await callNaverKeywordAPI(chunk);
+      if (data && data.keywordList) {
+        for (const item of data.keywordList) {
+          const kw = item.relKeyword || '';
+          // 브랜드명과 매칭 (정확 → 포함)
+          const match = chunk.find(b =>
+            kw.toLowerCase() === b.toLowerCase() ||
+            kw.replace(/\s/g,'') === b.replace(/\s/g,'')
+          ) || chunk.find(b =>
+            kw.toLowerCase().includes(b.toLowerCase()) ||
+            b.toLowerCase().includes(kw.toLowerCase())
+          );
+
+          if (match && !adMap[match]) {
+            const parseCnt = (v) => {
+              if (typeof v === 'number') return v;
+              if (typeof v === 'string' && v.includes('<')) return 5;
+              return parseInt(v) || 0;
+            };
+            const pc = parseCnt(item.monthlyPcQcCnt);
+            const mo = parseCnt(item.monthlyMobileQcCnt);
+            adMap[match] = {
+              found: true,
+              pcSearch: item.monthlyPcQcCnt,
+              mobileSearch: item.monthlyMobileQcCnt,
+              totalSearch: pc + mo,
+              avgCpc: Math.round(((item.monthlyAvePcCpc||0) + (item.monthlyAveMobileCpc||0)) / 2),
+              compIdx: item.compIdx || '-'
+            };
+            totalFound++;
+            naverLog(`  ✅ ${match}: PC ${pc.toLocaleString()} / 모바일 ${mo.toLocaleString()}`, 'log-ok');
+          }
+        }
+      } else {
+        naverLog(`  ⚠️ 청크 ${ci+1} 응답 없음 또는 빈 결과`, 'log-err');
+      }
+
+      if (ci < chunks.length - 1) await new Promise(r => setTimeout(r, 300));
+    }
+
+    naverLog(`✅ 네이버 API 조회 완료: ${totalFound}/${brandNames.length}개 브랜드 매칭`, 'log-ok');
 
     const merged = brands.map(b => {
       const ad = adMap[b.name] || { found: false };
