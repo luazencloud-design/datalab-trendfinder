@@ -1,9 +1,5 @@
 {
-  "name": "datalab-trend",
+  "name": "lastone-unified",
   "version": "1.0.0",
-  "private": true,
-  "description": "네이버 데이터랩 쇼핑 트렌드 분석 웹서비스",
-  "engines": {
-    "node": ">=18.0.0"
-  }
+  "private": true
 }
