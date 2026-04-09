@@ -5,36 +5,65 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>라스트원 브랜드유통 트렌드 분석</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap');
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #f5f7fa; min-height: 100vh; padding: 24px 16px; color: #1a1a2e;
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f0f2f7; min-height: 100vh; padding: 24px 16px; color: #1a1a2e;
 }
 .container { max-width: 980px; margin: 0 auto; }
-.header { text-align: center; margin-bottom: 28px; }
+.header { text-align: center; margin-bottom: 22px; }
 .header h1 {
-  font-size: 22px; font-weight: 700; color: #03C75A;
-  display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 5px;
+  font-size: 21px; font-weight: 800; color: #1a1a2e;
+  display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 4px;
 }
 .header p { font-size: 13px; color: #888; }
-.search-box {
-  background: #fff; border-radius: 14px; padding: 20px 24px;
-  margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.07);
-  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
-}
-.search-box label { font-size: 14px; color: #444; font-weight: 600; white-space: nowrap; }
-.search-box input {
-  flex: 1; min-width: 160px; padding: 9px 14px;
-  border: 1.5px solid #e0e0e0; border-radius: 9px; font-size: 15px; outline: none; transition: border-color .2s;
-}
-.search-box input:focus { border-color: #03C75A; }
-.search-box button.main-btn {
-  background: #03C75A; color: #fff; border: none; border-radius: 9px;
-  padding: 9px 22px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .15s;
-}
-.search-box button.main-btn:hover { background: #02a84b; }
-.search-box button.main-btn:disabled { background: #bbb; cursor: not-allowed; }
-.hint { font-size: 12px; color: #aaa; width: 100%; }
+
+/* ── Config section ── */
+.config-section{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+@media(max-width:800px){.config-section{grid-template-columns:1fr}}
+.config-card{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 2px 10px rgba(0,0,0,.07)}
+.config-card h3{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.icon-gemini{color:#4285f4}
+.icon-naver{color:#03c75a}
+.field-row{display:flex;gap:8px;margin-bottom:8px;align-items:center}
+.field-row label{font-size:12px;font-weight:600;color:#555;min-width:80px;flex-shrink:0}
+.field-input{flex:1;padding:8px 12px;border:1.5px solid #e0e0e0;border-radius:9px;font-size:12px;font-family:monospace;outline:none;transition:border-color .2s;color:#333}
+.field-input:focus{border-color:#03c75a}
+.btn-save{background:#1a1a2e;color:#fff;border:none;border-radius:9px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer}
+.btn-save:hover{background:#2d2d4e}
+.btn-naver{background:#03c75a;color:#fff;border:none;border-radius:9px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer}
+.btn-naver:hover{background:#02b350}
+.key-status{font-size:12px;padding:4px 10px;border-radius:8px;display:none;margin-left:8px}
+.key-status.ok{display:inline-block;background:#dcfce7;color:#16a34a}
+.key-status.err{display:inline-block;background:#fee2e2;color:#dc2626}
+.config-hint{font-size:11px;color:#aaa;margin-top:8px;line-height:1.6}
+
+/* ── CORS proxy toggle ── */
+.proxy-row{display:flex;align-items:center;gap:8px;margin-top:10px;padding:8px 56px 8px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;position:relative}
+.proxy-row label{font-size:11px;color:#92400e;font-weight:600;flex:1}
+.proxy-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);display:inline-block;width:36px;height:20px;cursor:pointer}
+.proxy-toggle input{opacity:0;width:0;height:0}
+.proxy-slider{position:absolute;cursor:pointer;inset:0;background:#ccc;border-radius:20px;transition:.2s}
+.proxy-slider:before{content:'';position:absolute;height:14px;width:14px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s}
+.proxy-toggle input:checked+.proxy-slider{background:#03c75a}
+.proxy-toggle input:checked+.proxy-slider:before{transform:translateX(16px)}
+
+/* ── Naver API log ── */
+.api-log{max-height:160px;overflow-y:auto;font-size:11px;color:#666;background:#f8f8f8;border-radius:8px;padding:8px;margin-top:8px;display:none;font-family:monospace;line-height:1.6}
+.api-log.show{display:block}
+.log-ok{color:#16a34a}.log-err{color:#dc2626}.log-info{color:#2563eb}
+
+/* ── Date banner ── */
+.date-banner{background:linear-gradient(135deg,#1a1a2e 0%,#2d2d4e 100%);border-radius:14px;padding:18px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;box-shadow:0 4px 16px rgba(26,26,46,.18)}
+.date-left{display:flex;flex-direction:column;gap:2px}
+.date-today{font-size:12px;color:rgba(255,255,255,.55)}
+.date-ref{font-size:11px;color:rgba(255,255,255,.4);margin-top:2px}
+.date-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.badge-trend{background:#03c75a;color:#fff;font-size:12px;font-weight:700;padding:5px 14px;border-radius:20px}
+.btn-analyze{background:#fff;color:#1a1a2e;border:none;border-radius:10px;padding:9px 20px;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s}
+.btn-analyze:hover{background:#f0f0f0}
+.btn-analyze:disabled{background:#ccc;color:#999;cursor:not-allowed}
 .status-bar {
   text-align: center; padding: 14px; font-size: 14px; color: #555;
   background: #fff; border-radius: 10px; margin-bottom: 18px;
@@ -132,33 +161,7 @@ body {
 .drill-brand-bar { height: 100%; border-radius: 3px; background: #03C75A; }
 .drill-brand-score { font-size: 10px; color: #aaa; margin-top: 3px; }
 
-/* 네이버 검색광고 설정 */
-.naver-ad-section {
-  background: #fff; border-radius: 14px; padding: 16px 24px;
-  margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.07);
-}
-.naver-ad-toggle {
-  display: flex; align-items: center; gap: 10px; cursor: pointer;
-  font-size: 14px; font-weight: 600; color: #444; user-select: none;
-}
-.naver-ad-toggle input[type="checkbox"] {
-  width: 18px; height: 18px; accent-color: #03C75A; cursor: pointer;
-}
-.naver-ad-toggle .toggle-arrow { font-size: 11px; color: #aaa; transition: transform .2s; }
-.naver-ad-toggle .toggle-arrow.open { transform: rotate(90deg); }
-.naver-ad-fields { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px solid #f0f0f0; }
-.naver-ad-fields.show { display: block; }
-.naver-ad-fields .field-row {
-  display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;
-}
-.naver-ad-fields label { font-size: 13px; color: #555; font-weight: 600; min-width: 90px; }
-.naver-ad-fields input {
-  flex: 1; min-width: 180px; padding: 8px 12px;
-  border: 1.5px solid #e0e0e0; border-radius: 9px; font-size: 14px; outline: none; transition: border-color .2s;
-}
-.naver-ad-fields input:focus { border-color: #03C75A; }
-.naver-ad-hint { font-size: 11px; color: #aaa; margin-top: 4px; line-height: 1.6; }
-.naver-ad-hint a { color: #03C75A; text-decoration: none; }
+/* (config-section styles moved above) */
 
 /* 합산 테이블 */
 .merged-table-card {
@@ -213,47 +216,94 @@ body {
     <p>패션의류 · 스포츠레저 · 출산육아 · 패션잡화 브랜드 TOP 30 순위</p>
   </div>
 
-  <div class="search-box" style="flex-direction: column; gap: 12px;">
-    <div style="display: flex; align-items: center; gap: 10px; width: 100%; flex-wrap: wrap;">
-      <label style="min-width: 70px;">🔑 API 키</label>
-      <input type="password" id="apiKeyInput" placeholder="AIzaSy... Gemini API 키를 입력하세요" style="flex: 1; min-width: 200px;" />
-      <button class="main-btn" style="background: #555; padding: 9px 14px; font-size: 13px;" onclick="toggleKeyVisibility()" id="toggleKeyBtn">보기</button>
+  <!-- ── Config: Gemini + Naver API ── -->
+  <div class="config-section">
+    <!-- Gemini -->
+    <div class="config-card">
+      <h3><span class="icon-gemini">✦</span> Gemini API Key</h3>
+      <div class="field-row">
+        <label>API Key</label>
+        <input type="password" class="field-input" id="geminiKey" placeholder="AIza..." />
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="btn-save" onclick="saveGeminiKey()">저장</button>
+        <span class="key-status" id="geminiStatus"></span>
+      </div>
+      <div class="config-hint">
+        키는 브라우저(localStorage)에만 저장됩니다 ·
+        <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#4285f4">aistudio.google.com</a>에서 무료 발급
+      </div>
     </div>
-    <div style="display: flex; align-items: center; gap: 10px; width: 100%; flex-wrap: wrap;">
-      <label style="min-width: 70px;">분석 월</label>
-      <input type="text" id="periodInput" placeholder="예: 25년 4월 / 2024년 11월" value="25년 4월" />
-      <button class="main-btn" id="analyzeBtn" onclick="analyze()">분석하기</button>
-    </div>
-    <span class="hint">⚠️ API 키는 브라우저에만 저장되며 서버에 보관되지 않습니다
-            <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#6366f1;">aistudio.google.com</a>에서 무료 발급
-      · 입력 월의 전년도 동월 쇼핑 트렌드를 분석합니다</span>
-  </div>
 
-  <!-- 네이버 검색광고 API 설정 -->
-  <div class="naver-ad-section">
-    <label class="naver-ad-toggle" onclick="toggleNaverAd()">
-      <input type="checkbox" id="naverAdEnabled" />
-      <span>📊 네이버 검색광고 데이터 합산</span>
-      <span class="toggle-arrow" id="naverAdArrow">▶</span>
-    </label>
-    <div class="naver-ad-fields" id="naverAdFields">
+    <!-- Naver -->
+    <div class="config-card">
+      <h3><span class="icon-naver">N</span> 네이버 검색광고 API</h3>
       <div class="field-row">
         <label>Customer ID</label>
-        <input type="text" id="naverCustomerId" placeholder="광고주 ID (숫자)" />
+        <input type="text" class="field-input" id="naverCustomerId" placeholder="예: 1234567" />
       </div>
       <div class="field-row">
-        <label>API 키</label>
-        <input type="text" id="naverApiKey" placeholder="Access License (API Key)" />
+        <label>API Key</label>
+        <input type="text" class="field-input" id="naverApiKey" placeholder="예: 010000000..." />
       </div>
       <div class="field-row">
-        <label>Secret 키</label>
-        <input type="password" id="naverSecretKey" placeholder="Secret Key" />
+        <label>Secret Key</label>
+        <input type="password" class="field-input" id="naverSecretKey" placeholder="AQAAAA..." />
       </div>
-      <div class="naver-ad-hint">
-        ⚠️ 인증 정보는 브라우저에만 저장됩니다 ·
-        <a href="https://searchad.naver.com" target="_blank">searchad.naver.com</a> →
-        도구 → API 사용 관리에서 발급
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="btn-naver" onclick="saveNaverKeys()">저장</button>
+        <button class="btn-naver" style="background:#065f46" onclick="testNaverAPI()">연결 테스트</button>
+        <span class="key-status" id="naverStatus"></span>
       </div>
+
+      <!-- CORS Proxy -->
+      <div class="proxy-row">
+        <label>
+          ⚠️ CORS 프록시 사용 (로컬 HTML에서 API 호출 시 필요)<br>
+          <span style="font-size:10px;color:#b45309">브라우저 보안정책으로 직접 호출이 차단될 경우 활성화하세요</span>
+        </label>
+        <label class="proxy-toggle">
+          <input type="checkbox" id="corsProxy" checked>
+          <span class="proxy-slider"></span>
+        </label>
+      </div>
+      <div class="proxy-row" style="margin-top:4px;background:#f0f9ff;border-color:#bae6fd">
+        <label style="color:#0369a1">
+          🔀 프록시 서버 선택
+        </label>
+        <select id="proxySelect" style="padding:4px 8px;border:1.5px solid #bae6fd;border-radius:6px;font-size:11px;font-weight:600;color:#0369a1;background:#fff;cursor:pointer;outline:none">
+          <option value="auto">자동 (순차 시도)</option>
+          <option value="vercel" selected>Vercel (권장)</option>
+          <option value="local">로컬 (localhost:3100)</option>
+          <option value="corsproxy">corsproxy.io</option>
+          <option value="allorigins">allorigins.win</option>
+          <option value="codetabs">codetabs.com</option>
+        </select>
+      </div>
+
+      <div class="config-hint">
+        <a href="https://searchad.naver.com" target="_blank" style="color:#03c75a">searchad.naver.com</a> →
+        도구 → API 사용 관리 에서 발급<br>
+        분석 시 브랜드명을 키워드로 자동 조회합니다
+      </div>
+      <div class="api-log" id="naverLog"></div>
+    </div>
+  </div>
+
+  <!-- ── Date banner ── -->
+  <div class="date-banner">
+    <div class="date-left">
+      <div class="date-today">📅 분석 기준월</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+        <input type="month" id="monthInput"
+          style="background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 12px;color:#fff;font-size:15px;font-weight:600;outline:none;cursor:pointer"
+          onchange="onMonthChange()"/>
+      </div>
+      <div class="date-ref" id="refDisplay">참조: —</div>
+    </div>
+    <div class="date-right">
+      <div class="badge-trend">N 트렌드 분석</div>
+      <button class="btn-analyze" id="analyzeBtn" onclick="analyze()">🔍 분석하기</button>
     </div>
   </div>
 
@@ -313,78 +363,200 @@ const CAT_COLORS = {
 };
 function esc(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 
-/* API 키 관리 */
-function getApiKey() { return document.getElementById('apiKeyInput').value.trim(); }
-function saveApiKey() { const key = getApiKey(); if (key) { try { localStorage.setItem('gemini_api_key', key); } catch(e) {} } }
-function loadApiKey() { try { const s = localStorage.getItem('gemini_api_key'); if (s) document.getElementById('apiKeyInput').value = s; } catch(e) {} }
-function toggleKeyVisibility() {
-  const input = document.getElementById('apiKeyInput');
-  const btn = document.getElementById('toggleKeyBtn');
-  if (input.type === 'password') { input.type = 'text'; btn.textContent = '숨기기'; }
-  else { input.type = 'password'; btn.textContent = '보기'; }
+/* ── Month picker init ── */
+let targetYear, targetMonth;
+function initMonth(){
+  const t=new Date(), pad=n=>String(n).padStart(2,'0');
+  document.getElementById('monthInput').value=`${t.getFullYear()}-${pad(t.getMonth()+1)}`;
+  applyMonth(t.getFullYear(), t.getMonth()+1);
 }
+function onMonthChange(){
+  const v=document.getElementById('monthInput').value;
+  if(v){ const [y,m]=v.split('-'); applyMonth(parseInt(y), parseInt(m)); }
+}
+function applyMonth(y,m){
+  targetYear=y; targetMonth=m;
+  const y1=y-3, y2=y-2, y3=y-1;
+  document.getElementById('refDisplay').textContent=`참조: ${y1}·${y2}·${y3}년 ${m}월 3개년 종합 분석`;
+}
+initMonth();
 
-/* 네이버 검색광고 API 키 관리 */
-function getNaverCreds() {
+/* ── Gemini Key Storage ── */
+function getGeminiKey(){ return localStorage.getItem('lo_geminiKey')||''; }
+function saveGeminiKey(){
+  const k=document.getElementById('geminiKey').value.trim(), st=document.getElementById('geminiStatus');
+  if(!k.startsWith('AIza')){st.className='key-status err';st.textContent='❌ AIza로 시작해야 합니다';return}
+  localStorage.setItem('lo_geminiKey',k);
+  st.className='key-status ok';st.textContent='✅ 저장됨';
+  document.getElementById('geminiKey').value='';
+  setTimeout(()=>st.style.display='none',3000);
+}
+(function(){if(getGeminiKey()){const s=document.getElementById('geminiStatus');s.className='key-status ok';s.textContent='✅ 저장됨'}})();
+
+/* ── Naver Key Storage ── */
+function getNaverKeys(){
   return {
-    customerId: document.getElementById('naverCustomerId').value.trim(),
-    apiKey: document.getElementById('naverApiKey').value.trim(),
-    secretKey: document.getElementById('naverSecretKey').value.trim()
+    customerId: localStorage.getItem('lo_naverCustId')||'',
+    apiKey:     localStorage.getItem('lo_naverApiKey')||'',
+    secretKey:  localStorage.getItem('lo_naverSecret')||''
   };
 }
-function saveNaverCreds() {
-  const c = getNaverCreds();
-  try {
-    localStorage.setItem('naver_ad_cid', c.customerId);
-    localStorage.setItem('naver_ad_ak', c.apiKey);
-    localStorage.setItem('naver_ad_sk', c.secretKey);
-    localStorage.setItem('naver_ad_on', document.getElementById('naverAdEnabled').checked ? '1' : '0');
-  } catch(e) {}
+function saveNaverKeys(){
+  const cid=document.getElementById('naverCustomerId').value.trim();
+  const ak=document.getElementById('naverApiKey').value.trim();
+  const sk=document.getElementById('naverSecretKey').value.trim();
+  const st=document.getElementById('naverStatus');
+  if(!cid||!ak||!sk){st.className='key-status err';st.textContent='❌ 3개 항목 모두 입력하세요';return}
+  localStorage.setItem('lo_naverCustId',cid);
+  localStorage.setItem('lo_naverApiKey',ak);
+  localStorage.setItem('lo_naverSecret',sk);
+  st.className='key-status ok';st.textContent='✅ 저장됨';
+  document.getElementById('naverCustomerId').value='';
+  document.getElementById('naverApiKey').value='';
+  document.getElementById('naverSecretKey').value='';
+  setTimeout(()=>st.style.display='none',3000);
 }
-function loadNaverCreds() {
-  try {
-    const cid = localStorage.getItem('naver_ad_cid');
-    const ak = localStorage.getItem('naver_ad_ak');
-    const sk = localStorage.getItem('naver_ad_sk');
-    const en = localStorage.getItem('naver_ad_on');
-    if (cid) document.getElementById('naverCustomerId').value = cid;
-    if (ak) document.getElementById('naverApiKey').value = ak;
-    if (sk) document.getElementById('naverSecretKey').value = sk;
-    if (en === '1') {
-      document.getElementById('naverAdEnabled').checked = true;
-      document.getElementById('naverAdFields').classList.add('show');
-      document.getElementById('naverAdArrow').classList.add('open');
-    }
-  } catch(e) {}
-}
-function toggleNaverAd() {
-  const cb = document.getElementById('naverAdEnabled');
-  const fields = document.getElementById('naverAdFields');
-  const arrow = document.getElementById('naverAdArrow');
-  const willBeChecked = !cb.checked;
-  fields.classList.toggle('show', willBeChecked);
-  arrow.classList.toggle('open', willBeChecked);
-}
-window.addEventListener('DOMContentLoaded', () => { loadApiKey(); loadNaverCreds(); });
+(function(){
+  const n=getNaverKeys();
+  if(n.customerId&&n.apiKey&&n.secretKey){
+    const s=document.getElementById('naverStatus');s.className='key-status ok';s.textContent='✅ 저장됨';
+  }
+})();
 
-function parsePeriod(input) {
-  const m = input.match(/(\d{2,4})년\s*(\d{1,2})월/);
-  if (!m) return null;
-  let y = parseInt(m[1]); if (y < 100) y += 2000;
-  return { year: y, month: parseInt(m[2]) };
+function naverLog(msg, cls=''){
+  const el=document.getElementById('naverLog');
+  el.classList.add('show');
+  el.innerHTML+=`<div class="${cls}">${new Date().toLocaleTimeString()} ${msg}</div>`;
+  el.scrollTop=el.scrollHeight;
+}
+
+/* ── Naver API: HMAC-SHA256 Signature ── */
+async function generateSignature(secretKey, timestamp, method, uri){
+  const message = `${timestamp}.${method}.${uri}`;
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(secretKey);
+  const msgData = encoder.encode(message);
+  const cryptoKey = await crypto.subtle.importKey('raw', keyData, {name:'HMAC',hash:'SHA-256'}, false, ['sign']);
+  const sig = await crypto.subtle.sign('HMAC', cryptoKey, msgData);
+  return btoa(String.fromCharCode(...new Uint8Array(sig)));
+}
+
+function useProxy(){ return document.getElementById('corsProxy').checked; }
+
+const PROXY_LIST = [
+  { name:'vercel',     wrap: (url, headers) => `/api/proxy?url=${encodeURIComponent(url)}&headers=${encodeURIComponent(JSON.stringify(headers))}`, headersOk:'viaUrl' },
+  { name:'local',      wrap: (url, headers) => `http://localhost:3100/proxy?url=${encodeURIComponent(url)}&headers=${encodeURIComponent(JSON.stringify(headers))}`, headersOk:'viaUrl' },
+  { name:'corsproxy',  wrap: (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`, headersOk:true },
+  { name:'allorigins', wrap: (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`, headersOk:false },
+  { name:'codetabs',   wrap: (url) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`, headersOk:false },
+];
+
+function getSelectedProxies(){
+  const sel = document.getElementById('proxySelect').value;
+  if(sel==='auto') return [...PROXY_LIST];
+  const found = PROXY_LIST.find(p=>p.name===sel);
+  return found ? [found] : [...PROXY_LIST];
+}
+
+/* ── Naver API: Keyword Tool (multi-proxy fallback) ── */
+async function callNaverKeywordAPI(keywords){
+  const {customerId, apiKey, secretKey} = getNaverKeys();
+  if(!customerId||!apiKey||!secretKey){
+    naverLog('⚠️ 네이버 API 키가 설정되지 않았습니다','log-err');
+    return null;
+  }
+
+  const method = 'GET';
+  const uri = '/keywordstool';
+  const hintKeywords = keywords.join(',');
+  const baseUrl = `https://api.searchad.naver.com${uri}?hintKeywords=${encodeURIComponent(hintKeywords)}&showDetail=1`;
+
+  // Direct call (no proxy)
+  if(!useProxy()){
+    const timestamp = String(Date.now());
+    const signature = await generateSignature(secretKey, timestamp, method, uri);
+    const headers = { 'X-Timestamp':timestamp, 'X-API-KEY':apiKey, 'X-Customer':customerId, 'X-Signature':signature };
+    try {
+      const res = await fetch(baseUrl, { method:'GET', headers });
+      if(!res.ok){ naverLog(`❌ API 오류 (${res.status}): ${(await res.text()).slice(0,120)}`,'log-err'); return null; }
+      return await res.json();
+    } catch(e){
+      naverLog(`❌ 직접 호출 실패: ${e.message} → CORS 프록시를 켜보세요.`,'log-err');
+      return null;
+    }
+  }
+
+  // Proxy call – try each proxy in order
+  const proxies = getSelectedProxies();
+  for(let i=0; i<proxies.length; i++){
+    const proxy = proxies[i];
+    const timestamp = String(Date.now());
+    const signature = await generateSignature(secretKey, timestamp, method, uri);
+    const headers = { 'X-Timestamp':timestamp, 'X-API-KEY':apiKey, 'X-Customer':customerId, 'X-Signature':signature };
+
+    const proxyUrl = proxy.headersOk==='viaUrl' ? proxy.wrap(baseUrl, headers) : proxy.wrap(baseUrl);
+    naverLog(`🔀 프록시 시도 ${i+1}/${proxies.length}: ${proxy.name}`, 'log-info');
+
+    try {
+      const fetchOpts = { method:'GET' };
+      if(proxy.headersOk===true) fetchOpts.headers = headers;
+
+      const timeoutPromise = new Promise((_,reject) => setTimeout(()=>reject(new Error('시간 초과(8초)')), 8000));
+      const res = await Promise.race([ fetch(proxyUrl, fetchOpts), timeoutPromise ]);
+
+      if(!res.ok){
+        const errText = await res.text();
+        naverLog(`  ⚠️ ${proxy.name} 응답 오류 (${res.status}): ${errText.slice(0,80)}`,'log-err');
+        continue;
+      }
+
+      const data = await res.json();
+      if(data && (data.keywordList || Array.isArray(data))){
+        naverLog(`  ✅ ${proxy.name} 성공!`,'log-ok');
+        return data;
+      } else {
+        naverLog(`  ⚠️ ${proxy.name} 응답은 왔으나 유효한 데이터가 아님`,'log-err');
+        continue;
+      }
+    } catch(e){
+      naverLog(`  ⚠️ ${proxy.name} 실패: ${e.message}`,'log-err');
+      continue;
+    }
+  }
+
+  naverLog('❌ 모든 프록시 시도 실패. 아래 해결 방법을 확인하세요:\n   1) 네이버 API 키가 올바른지 확인\n   2) 다른 프록시 서버를 선택해서 재시도\n   3) 로컬 프록시 서버를 사용 (CORS 제한 없음)','log-err');
+  return null;
+}
+
+/* ── Test Naver API ── */
+async function testNaverAPI(){
+  const st=document.getElementById('naverStatus');
+  st.className='key-status';st.style.display='inline-block';st.textContent='⏳ 테스트 중...';st.style.background='#fef3c7';st.style.color='#92400e';
+
+  document.getElementById('naverLog').innerHTML='';
+  const proxyMode = useProxy() ? `프록시: ${document.getElementById('proxySelect').value}` : '직접 호출';
+  naverLog(`🔄 네이버 API 연결 테스트 시작 (키워드: "나이키", ${proxyMode})`, 'log-info');
+
+  const data = await callNaverKeywordAPI(['나이키']);
+  if(data && data.keywordList && data.keywordList.length > 0){
+    st.className='key-status ok';
+    st.textContent=`✅ 연결 성공 (${data.keywordList.length}개 결과)`;
+    naverLog(`🎉 테스트 성공! ${data.keywordList.length}개 연관 키워드 반환됨`,'log-ok');
+    const first = data.keywordList[0];
+    naverLog(`  예시: "${first.relKeyword}" PC: ${first.monthlyPcQcCnt} / 모바일: ${first.monthlyMobileQcCnt}`,'log-ok');
+  } else {
+    st.className='key-status err';
+    st.textContent='❌ 연결 실패';
+    naverLog('❌ 연결 실패. 위 로그에서 각 프록시별 오류를 확인하세요.','log-err');
+  }
 }
 
 /* 메인 분석 */
 async function analyze() {
-  const apiKey = getApiKey();
-  if (!apiKey) { alert('Gemini API 키를 입력해주세요.'); document.getElementById('apiKeyInput').focus(); return; }
-  saveApiKey(); saveNaverCreds();
+  const apiKey = getGeminiKey();
+  if (!apiKey) { alert('Gemini API 키를 먼저 입력하고 저장해주세요 🔑'); return; }
 
-  const raw = document.getElementById('periodInput').value.trim();
-  const parsed = parsePeriod(raw);
-  if (!parsed) { alert('형식을 확인해주세요. 예: 25년 4월 / 2024년 11월'); return; }
-
-  currentPeriod = `${parsed.year}년 ${parsed.month}월`;
+  currentPeriod = `${targetYear}년 ${targetMonth}월`;
   const btn = document.getElementById('analyzeBtn');
   btn.disabled = true; closeDrill();
 
@@ -401,7 +573,7 @@ async function analyze() {
   try {
     const res = await fetch('/api/analyze', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ period: currentPeriod, month: parsed.month, apiKey })
+      body: JSON.stringify({ period: currentPeriod, month: targetMonth, apiKey })
     });
     const rawText = await res.text();
     let result;
@@ -421,14 +593,9 @@ async function analyze() {
     lastBrands = result.brands;
 
     // 네이버 검색광고 합산
-    const naverEnabled = document.getElementById('naverAdEnabled').checked;
-    if (naverEnabled) {
-      const creds = getNaverCreds();
-      if (!creds.customerId || !creds.apiKey || !creds.secretKey) {
-        sb.textContent += ' ⚠️ 네이버 검색광고 인증 정보가 비어있어 합산을 건너뜁니다.';
-      } else {
-        await fetchAndMergeSearchAd(result.brands, creds, result.period);
-      }
+    const naverCreds = getNaverKeys();
+    if (naverCreds.customerId && naverCreds.apiKey && naverCreds.secretKey) {
+      await fetchAndMergeSearchAd(result.brands, naverCreds, result.period);
     }
   } catch (e) { sb.textContent = '❌ 오류: ' + e.message; }
   btn.disabled = false;
@@ -590,7 +757,7 @@ async function drillDown(categoryName) {
   content.innerHTML = '<div class="drill-loading">⏳ ' + esc(categoryName) + ' 브랜드 분석 중...</div>';
   panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
   try {
-    const apiKey = getApiKey();
+    const apiKey = getGeminiKey();
     const res = await fetch('/api/drill', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ category: categoryName, period: currentPeriod, apiKey })
@@ -613,7 +780,7 @@ async function drillDown(categoryName) {
   }
 }
 function closeDrill() { document.getElementById('drillPanel').classList.remove('show'); }
-document.getElementById('periodInput').addEventListener('keydown', e => { if (e.key === 'Enter') analyze(); });
+document.getElementById('monthInput').addEventListener('keydown', e => { if (e.key === 'Enter') analyze(); });
 </script>
 </body>
 </html>
